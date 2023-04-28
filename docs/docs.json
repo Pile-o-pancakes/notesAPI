@@ -1,0 +1,548 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "notesAPI",
+        "description": "Hantera och spara korta textfiler, samt inloggning",
+        "version": "0.9.0"
+    },
+    "components": {
+        "schemas": {
+            "getNotes": {
+                "type": "object",
+                "properties": {
+                    "title": "string",
+                    "text": "string",
+                    "_id": "string",
+                    "createdAt": "object",
+                    "updatedAt": "object"
+                }
+            },
+            "notes": {
+                "type": "object",
+                "properties": {
+                    "title": "string",
+                    "text": "string"
+                }
+            },
+            "message": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "X-API-Key": "string",
+        "APIKeyHeader": {
+            "type": "APIKey",
+            "in": "header",
+            "name": "X-API-Key"
+        }
+    },
+    "paths": {
+        "/api/notes": {
+            "get": {
+                "security": {
+                    "APIKeyQueryParam": "[]",
+                    "responses": {
+                        "200": {
+                            "description": "OK, giltig token"
+                        }
+                    }
+                },
+                "summary": "Hämta alla notes",
+                "description": "Hämta alla notes i JSON format, inkluderar titel, text, id, datum då den skapades, datum då den senast modifierades",
+                "responses": {
+                    "200": {
+                        "description": "OK, få tillbaka alla sparade notes",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "notes": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/getNotes"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Data kunde inte hämtas",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": {
+                    "APIKeyQueryParam": "[]",
+                    "responses": {
+                        "200": {
+                            "description": "OK, giltig token"
+                        }
+                    }
+                },
+                "summary": "Spara en ny note",
+                "description": "Spara all data för en ny note. Behöver 'title' och 'text' som string",
+                "parameters": {
+                    "in": "path",
+                    "name": "note",
+                    "required": "true",
+                    "type": "object",
+                    "minimum": "1"
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK, en ny note har sparats",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/getNotes",
+                                            "id": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Felaktigt formaterad data mottogs",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Data kunde inte hämtas",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": {
+                    "APIKeyQueryParam": "[]",
+                    "responses": {
+                        "200": {
+                            "description": "OK, giltig token"
+                        }
+                    }
+                },
+                "summary": "Redigera en note",
+                "description": "Hitta en note med matchande ID, byt ut dess data mot inskickad data",
+                "parameters": {
+                    "in": "path",
+                    "name": "note",
+                    "required": "true",
+                    "type": "object",
+                    "minimum": "1"
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK, en note med matchande ID har redigerats",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message",
+                                            "id": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Felaktigt formaterad data mottogs",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ingen matchande note hittades",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": {
+                    "APIKeyQueryParam": "[]",
+                    "responses": {
+                        "200": {
+                            "description": "OK, giltig token"
+                        }
+                    }
+                },
+                "summary": "Radera en note",
+                "description": "Skicka in ID och radera en note med matchande ID",
+                "parameters": {
+                    "in": "path",
+                    "name": "id",
+                    "required": "true",
+                    "type": "object",
+                    "minimum": "1"
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK, en note med matchande ID har raderats",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Felaktigt formaterad data mottogs",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ingen matchande note hittades",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/notes/search/{title}": {
+            "get": {
+                "security": {
+                    "APIKeyQueryParam": "[]",
+                    "responses": {
+                        "200": {
+                            "description": "OK, giltig token"
+                        }
+                    }
+                },
+                "summary": "Hämta alla notes med matchande titel",
+                "description": "Hämtar alla notes som har söktermen i sin titel, återfå resultatet i en array med objekt",
+                "parameters": {
+                    "name": "title",
+                    "in": "query",
+                    "required": true,
+                    "description": "Skicka en sökterm via URL parameter, få tillbaka alla matchande notes i en array med objekt",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                "200": {
+                    "description": "OK, en note med matchande ID har raderats",
+                    "content": {
+                        "application/JSON": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "$ref": "#/components/schemas/message"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "OK, en note med matchande ID har raderats",
+                    "content": {
+                        "application/JSON": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "$ref": "#/components/schemas/message"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/signup": {
+            "post": {
+                "summary": "Skapa ett nytt användarkonto",
+                "description": "Skapa ett konto med 'username' och 'password'",
+                "parameters": {
+                    "in": "path",
+                    "name": "user",
+                    "required": "true",
+                    "type": "object",
+                    "minimum": "1"
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK, ett nytt användarkonto har sparats",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Felaktigt formaterad data mottogs",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "418": {
+                        "description": "Användarnamnet som angavs är redan taget",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Data kunde inte hämtas",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "summary": "Logga in",
+                "description": "Logga in och få en web token med 'username' och 'password'",
+                "parameters": {
+                    "in": "path",
+                    "name": "user",
+                    "required": "true",
+                    "type": "object",
+                    "minimum": "1"
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK, användarnamnet och läsenordet har verifierats",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "notes": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/getNotes",
+                                                "token": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Felaktigt formaterad data mottogs",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "418": {
+                        "description": "Inget matchande användarnamn och/eller lösenord hittades",
+                        "content": {
+                            "application/JSON": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "$ref": "#/components/schemas/message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

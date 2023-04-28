@@ -6,10 +6,10 @@ function checkNewNote(req, res, next) {
     const maxTitleLength = 50;
     const maxTextLength = 300;
 
-    if( !('title' in req.body) || !('text' in req.body)){
+    if( !("title" in req.body) || !("text" in req.body)){
         res.status(400).json({
             success: false,
-            message: "Error! title och/eller text saknas"
+            message: "Error! 'title' och/eller 'text' saknas"
         })
     }
     else if( !(typeof(title) === "string") || !(typeof(text) === "string")){
@@ -29,4 +29,16 @@ function checkNewNote(req, res, next) {
     }
 }
 
-module.exports = { checkNewNote }
+function checkDeleteId(req, res, next) {
+    if( !('id' in req.body)) {
+        res.status(400).json({
+            success: false,
+            message: "Error! ID saknas"
+        })
+    }
+    else {
+        next();
+    }
+}
+
+module.exports = { checkNewNote, checkDeleteId }
